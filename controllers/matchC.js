@@ -11,16 +11,16 @@ const moment = require("moment");
 const { match } = require("assert");
 const { createDecipheriv } = require("crypto");
 
-// const date = require("date-and-time");
 //@des     get all matches
 //@route   get :'api/v1/match'
 //@access   'public'
 exports.getMatchs = asyncHandler(async (req, res, next) => {
-  const matches = await Match.find();
+  // const matches = await Match.find().populate('stadium');
+  // console.log(matches);
 
-  if (!matches) {
-    return next(new ErrorResponse("resourse not found", 404));
-  }
+  // if (!matches) {
+  //   return next(new ErrorResponse("resourse not found", 404));
+  // }
 
   res.status(200).json(res.advanceResults);
 });
@@ -29,7 +29,7 @@ exports.getMatchs = asyncHandler(async (req, res, next) => {
 //@route   get :'api/v1/match'
 //@access   'public'
 exports.getMatch = asyncHandler(async (req, res, next) => {
-  const match = await Match.findById(req.params.id);
+  const match = await Match.findById(req.params.id).populate('stadium');
 
   if (!match) {
     return next(new ErrorResponse("match not found", 404));
@@ -132,19 +132,38 @@ exports.joinMatch = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("match not available or finished", 404));
   }
 
+console.log(req.user.id);
+console.log(match.players)
+
+
+  
+if(match.players.includes(req.user.id)){
+
+  return res.status(409).json({
+    sucess: false,
+  });}
+
   const data = await Match.findByIdAndUpdate(
     req.params.id,
 
     {
-      $addToSet: { players: [req.user.id] },
+      $addToSet: { 'players': [req.user.id] },
     },
     {
       new: true,
       runValidators: false,
     }
-  );
+  ).populate('stadium');
 
-  res.status(201).json({
+
+
+
+
+
+  
+
+
+  res.status(200).json({
     sucess: true,
     data: data,
   });

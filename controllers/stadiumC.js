@@ -70,7 +70,7 @@ exports.createStadium = asyncHandler(async (req, res, next) => {
 
       console.log(theAssets);
 
-      var assetsDatabase = [];
+      var assetsDatabase = [] ;
 
       for (var i = 0; i < theAssets.length; i++) {
         //getting the image file

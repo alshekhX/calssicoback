@@ -20,7 +20,7 @@ const advanceResults = require("../middlewares/advanceResults");
 
 const router = express.Router();
 
-router.route("/").get(advanceResults(Match), getMatchs);
+router.route("/").get(advanceResults(Match,"stadium"), getMatchs);
 router.route("/").post(protect, createMatch);
 
 router.route("/join/code").put(protect, authorize("user"), joinMatchCode);
